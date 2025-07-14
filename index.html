@@ -4,30 +4,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Jeju NOTAM Viewer</title>
-  <style>
-    body { font-family: sans-serif; padding: 2rem; }
-    input, button { font-size: 1rem; padding: 0.5rem; margin: 0.5rem 0; }
-    #results { white-space: pre-wrap; margin-top: 1rem; }
-  </style>
+  <title>Jeju Air NOTAM Viewer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h1>Jeju Air NOTAM Viewer</h1>
-  <p>공항 코드 또는 7C 편명을 입력하세요:</p>
-  <input type="text" id="search" placeholder="예: VMMC 또는 7C6001" />
-  <button onclick="fetchNOTAM()">검색</button>
-  <div id="results"></div>
+<body class="bg-gray-100 text-gray-900 font-sans">
+  <div class="max-w-xl mx-auto mt-16 p-6 bg-white shadow-2xl rounded-2xl">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-blue-700">Jeju Air NOTAM Viewer</h1>
+      <div id="clock" class="text-sm text-gray-500"></div>
+    </div>
+    <p class="mb-4 text-gray-700">공항 코드 또는 7C 편명을 입력하세요:</p>
+    <div class="flex gap-2 mb-4">
+      <input type="text" id="search" placeholder="예: VMMC 또는 7C6001"
+        class="flex-1 border rounded-xl px-4 py-2 shadow-sm focus:outline-none focus:ring focus:border-blue-300" />
+      <button onclick="fetchNOTAM()"
+        class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700">검색</button>
+    </div>
+    <div id="results" class="bg-gray-50 border border-gray-200 rounded-xl p-4 whitespace-pre-wrap text-sm text-gray-800"></div>
+  </div>
+
   <script>
-    async function fetchNOTAM() {
+    function fetchNOTAM() {
       const query = document.getElementById("search").value;
       const results = document.getElementById("results");
       results.innerText = "검색 중...";
-      // Dummy result
       setTimeout(() => {
-        results.innerText = `[NOTAM] 검색어: ${query}
-(※ 실제 API는 추후 연동 예정)`;
+        results.innerText = `[NOTAM 결과]
+검색어: ${query}
+※ 실제 API는 추후 연동 예정`;
       }, 1000);
     }
+
+    function updateClock() {
+      const now = new Date();
+      now.setHours(now.getHours() + 9); // UTC+9 보정
+      document.getElementById("clock").innerText = now.toISOString().slice(0, 19).replace("T", " ");
+    }
+
+    updateClock();
+    setInterval(updateClock, 60000);
   </script>
 </body>
 </html>
