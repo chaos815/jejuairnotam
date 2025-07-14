@@ -7,37 +7,82 @@
   <title>Jeju Air NOTAM Viewer</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-900 font-sans">
-  <div class="max-w-xl mx-auto mt-16 p-6 bg-white shadow-2xl rounded-2xl">
+<body class="bg-gray-50 text-gray-800 font-sans">
+  <div class="max-w-5xl mx-auto mt-12 px-4">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold text-blue-700">Jeju Air NOTAM Viewer</h1>
       <div id="clock" class="text-sm text-gray-500"></div>
     </div>
-    <p class="mb-4 text-gray-700">공항 코드 또는 7C 편명을 입력하세요:</p>
-    <div class="flex gap-2 mb-4">
-      <input type="text" id="search" placeholder="예: VMMC 또는 7C6001"
-        class="flex-1 border rounded-xl px-4 py-2 shadow-sm focus:outline-none focus:ring focus:border-blue-300" />
-      <button onclick="fetchNOTAM()"
-        class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700">검색</button>
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+      <p class="mb-2">편명 숫자만 입력하세요 (예: <strong>6001</strong>)</p>
+      <div class="flex gap-2 mb-6">
+        <input type="text" id="search" placeholder="예: 6001"
+          class="flex-1 border rounded-xl px-4 py-2 shadow-sm focus:outline-none focus:ring focus:border-blue-300" />
+        <button onclick="fetchNOTAM()" class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700">검색</button>
+      </div>
+
+      <div id="routeInfo" class="mb-6 text-sm text-gray-700"></div>
+
+      <div class="grid grid-cols-2 gap-6 text-sm">
+        <div class="bg-gray-100 p-4 rounded-xl">
+          <h2 class="text-md font-semibold mb-2" id="leftTitle">출발지 원문</h2>
+          <pre class="whitespace-pre-wrap text-xs" id="leftContent">출발지 NOTAM 원문 예시</pre>
+        </div>
+        <div class="bg-white p-4 rounded-xl border shadow-sm">
+          <h2 class="text-md font-semibold mb-2" id="rightTitle">출발지 해석</h2>
+          <pre class="whitespace-pre-wrap text-xs text-gray-700" id="rightContent">출발지 NOTAM 해석 예시</pre>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-6 text-sm mt-8">
+        <div class="bg-gray-100 p-4 rounded-xl">
+          <h2 class="text-md font-semibold mb-2" id="leftTitle2">목적지 원문</h2>
+          <pre class="whitespace-pre-wrap text-xs" id="leftContent2">목적지 NOTAM 원문 예시</pre>
+        </div>
+        <div class="bg-white p-4 rounded-xl border shadow-sm">
+          <h2 class="text-md font-semibold mb-2" id="rightTitle2">목적지 해석</h2>
+          <pre class="whitespace-pre-wrap text-xs text-gray-700" id="rightContent2">목적지 NOTAM 해석 예시</pre>
+        </div>
+      </div>
     </div>
-    <div id="results" class="bg-gray-50 border border-gray-200 rounded-xl p-4 whitespace-pre-wrap text-sm text-gray-800"></div>
   </div>
 
   <script>
+    const flightRoutes = {
+      "7C6001": { departure: "RKSI", arrival: "VMMC" },
+      "7C6002": { departure: "VMMC", arrival: "RKSI" },
+      "7C6037": { departure: "RKPC", arrival: "VMMC" },
+      "7C6038": { departure: "VMMC", arrival: "RKPC" }
+    };
+
     function fetchNOTAM() {
-      const query = document.getElementById("search").value;
-      const results = document.getElementById("results");
-      results.innerText = "검색 중...";
-      setTimeout(() => {
-        results.innerText = `[NOTAM 결과]
-검색어: ${query}
-※ 실제 API는 추후 연동 예정`;
-      }, 1000);
+      const input = document.getElementById("search").value.trim();
+      const code = input.startsWith("7C") ? input : `7C${input}`;
+      const route = flightRoutes[code];
+
+      if (!route) {
+        document.getElementById("routeInfo").innerText = "해당 편명을 찾을 수 없습니다.";
+        return;
+      }
+
+      document.getElementById("routeInfo").innerHTML = `
+        <strong>검색어:</strong> ${input} <br/>
+        <strong>출발지:</strong> ${route.departure} <br/>
+        <strong>목적지:</strong> ${route.arrival}
+      `;
+
+      // Dummy NOTAM example (추후 API 연결 가능)
+      document.getElementById("leftContent").innerText = `[${route.departure}] RWY05L/23R ILS unavailable due to maintenance until JUL 15.`;
+      document.getElementById("rightContent").innerText = `[${route.departure}] 활주로 RWY05L/23R의 계기착륙장치(ILS)는 유지보수로 인해 7월 15일까지 사용 불가입니다.`;
+
+      document.getElementById("leftContent2").innerText = `[${route.arrival}] Apron C closed for aircraft parking from JUL 13 to JUL 16 due to event.`;
+      document.getElementById("rightContent2").innerText = `[${route.arrival}] 행사로 인해 7월 13일부터 16일까지 Apron C 구역은 주기장소로 사용할 수 없습니다.`;
     }
 
     function updateClock() {
       const now = new Date();
-      now.setHours(now.getHours() + 9); // UTC+9 보정
+      now.setHours(now.getHours() + 9);  // KST 보정
       document.getElementById("clock").innerText = now.toISOString().slice(0, 19).replace("T", " ");
     }
 
