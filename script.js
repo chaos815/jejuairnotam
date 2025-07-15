@@ -1,1 +1,1 @@
-// JavaScript placeholder
+console.log('NOTAM Viewer Ready');
