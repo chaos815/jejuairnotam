@@ -2,14 +2,92 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Jeju Air NOTAM Viewer</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f1f3f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+    }
+    .info {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+    }
+    .notam-box {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .notam-col {
+      flex: 1;
+      background: #f0f0f0;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-wrap: break-word;
+    }
+  </style>
 </head>
 <body>
-  <div id="app">
+  <div class="container">
     <h1>NOTAM Viewer</h1>
-    <p>This is a placeholder for Jeju Air NOTAM viewer.</p>
+    <input type="text" id="flightInput" placeholder="Enter flight number (e.g. 6001)" onkeypress="if(event.key==='Enter') searchFlight()">
+    <div id="flightInfo" class="info"></div>
+    <div class="notam-box">
+      <div class="notam-col" id="notamOriginal">NOTAM 원문</div>
+      <div class="notam-col" id="notamTranslated">번역 결과</div>
+    </div>
   </div>
+
+  <script>
+    const routeMap = {
+      "6001": { dep: "RKSI", arr: "VMMC" },
+      "101": { dep: "RKSS", arr: "RKPC" },
+      "102": { dep: "RKPC", arr: "RKSS" }
+    };
+
+    function searchFlight() {
+      const input = document.getElementById("flightInput").value.trim();
+      const route = routeMap[input];
+      if (!route) {
+        document.getElementById("flightInfo").innerText = "🔍 No matching route found.";
+        return;
+      }
+      document.getElementById("flightInfo").innerHTML = `
+        ✈️ <strong>출발지:</strong> ${route.dep} | <strong>도착지:</strong> ${route.arr}
+      `;
+      document.getElementById("notamOriginal").innerText = "실시간 NOTAM 원문 불러오는 중...";
+      document.getElementById("notamTranslated").innerText = "번역결과 준비 중...";
+
+      // NOTE: 실제 API 연동은 서버에서 진행 필요
+      setTimeout(() => {
+        document.getElementById("notamOriginal").innerText = "A1234/25 NOTAM TEXT EXAMPLE
+ZONES CLOSED DUE TO ACTIVITY";
+        document.getElementById("notamTranslated").innerText = "A1234/25 노탐 예시
+활동으로 인해 구역이 폐쇄되었습니다.";
+      }, 1000);
+    }
+  </script>
 </body>
 </html>
