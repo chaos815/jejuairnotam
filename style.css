@@ -1,15 +1,1 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f2f5;
-  padding: 2rem;
-  color: #333;
-}
-
-#app {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  max-width: 600px;
-  margin: auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
+body { font-family: sans-serif; background: #fff; color: #333; }
