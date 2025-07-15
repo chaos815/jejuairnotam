@@ -1,1 +1,1 @@
-console.log('NOTAM Viewer Ready');
+// Final version script
