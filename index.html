@@ -21,7 +21,7 @@
     h1 {
       text-align: center;
     }
-    input[type="text"] {
+    input[type="text"], button {
       width: 100%;
       padding: 1rem;
       margin-top: 1rem;
@@ -52,7 +52,8 @@
 <body>
   <div class="container">
     <h1>NOTAM Viewer</h1>
-    <input type="text" id="flightInput" placeholder="Enter flight number (e.g. 6001)" onkeypress="if(event.key==='Enter') searchFlight()">
+    <input type="text" id="flightInput" placeholder="Enter flight number (e.g. 6001)">
+    <button onclick="searchFlight()">Search</button>
     <div id="flightInfo" class="info"></div>
     <div class="notam-box">
       <div class="notam-col" id="notamOriginal">NOTAM 원문</div>
@@ -72,6 +73,8 @@
       const route = routeMap[input];
       if (!route) {
         document.getElementById("flightInfo").innerText = "🔍 No matching route found.";
+        document.getElementById("notamOriginal").innerText = "";
+        document.getElementById("notamTranslated").innerText = "";
         return;
       }
       document.getElementById("flightInfo").innerHTML = `
@@ -80,14 +83,22 @@
       document.getElementById("notamOriginal").innerText = "실시간 NOTAM 원문 불러오는 중...";
       document.getElementById("notamTranslated").innerText = "번역결과 준비 중...";
 
-      // NOTE: 실제 API 연동은 서버에서 진행 필요
+      // 임시 예시 데이터 표시
       setTimeout(() => {
-        document.getElementById("notamOriginal").innerText = "A1234/25 NOTAM TEXT EXAMPLE
-ZONES CLOSED DUE TO ACTIVITY";
-        document.getElementById("notamTranslated").innerText = "A1234/25 노탐 예시
-활동으로 인해 구역이 폐쇄되었습니다.";
+        document.getElementById("notamOriginal").innerText = "A1234/25 NOTAM TEXT EXAMPLE\nZONES CLOSED DUE TO ACTIVITY";
+        document.getElementById("notamTranslated").innerText = "A1234/25 노탐 예시\n활동으로 인해 구역이 폐쇄되었습니다.";
       }, 1000);
     }
+
+    // 엔터 키 입력도 검색 실행
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("flightInput").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          searchFlight();
+        }
+      });
+    });
   </script>
 </body>
 </html>
