@@ -4,28 +4,39 @@
 <head>
   <meta charset="UTF-8" />
   <title>Jejuair NOTAM Viewer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-    .header { background: orange; color: white; padding: 1em; font-size: 1.5em; }
-    .container { padding: 1em; }
-    input, button { padding: 0.5em; font-size: 1em; margin-right: 0.5em; }
-    pre { background: #f8f8f8; padding: 1em; border: 1px solid #ccc; white-space: pre-wrap; }
+    body { font-family: 'Roboto', sans-serif; margin: 0; background: #fff; }
+    .header { background: #f37021; color: white; padding: 1em; font-size: 1.8em; text-align: center; }
+    .container { padding: 2em; max-width: 1200px; margin: auto; }
+    input, button { padding: 0.6em; font-size: 1em; margin-right: 0.5em; }
+    .info { margin: 1em 0; font-weight: bold; }
+    .results { display: flex; gap: 2em; }
+    .column { flex: 1; }
+    pre { background: #f9f9f9; padding: 1em; border: 1px solid #ccc; white-space: pre-wrap; height: 400px; overflow-y: scroll; }
   </style>
   <script>
     async function search() {
       const flight = document.getElementById('flightInput').value.trim();
       if (!flight) return;
+
       const res = await fetch(`/api/flight?flight=${flight}`);
+      const result = document.getElementById('results');
+      const info = document.getElementById('info');
       if (!res.ok) {
-        document.getElementById('results').innerText = "Error fetching NOTAM data";
+        result.innerHTML = "<p>Error fetching NOTAM data</p>";
+        info.innerText = "";
         return;
       }
       const data = await res.json();
-      document.getElementById('results').innerText =
+      info.innerText = `출발공항: ${data.departure} / 도착공항: ${data.arrival}`;
+      document.getElementById('rawNotam').innerText =
         `[${data.departure}] Airport NOTAM:\n` + data.depAirportNotam + "\n\n" +
         `[${data.arrival}] Airport NOTAM:\n` + data.arrAirportNotam + "\n\n" +
         `[${data.departure} FIR] NOTAM:\n` + data.depFIRNotam + "\n\n" +
         `[${data.arrival} FIR] NOTAM:\n` + data.arrFIRNotam;
+      document.getElementById('translatedNotam').innerText =
+        "[해석된 내용은 추후 여기에 표시됩니다]";
     }
 
     window.onload = () => {
@@ -38,9 +49,20 @@
 <body>
   <div class="header">Jejuair NOTAM Viewer</div>
   <div class="container">
-    <input id="flightInput" placeholder="Enter flight number (e.g., 6001)" />
-    <button onclick="search()">Search</button>
-    <pre id="results"></pre>
+    <p>편명을 입력해주세요 (예: 6001)</p>
+    <input id="flightInput" placeholder="예: 6001" />
+    <button onclick="search()">검색</button>
+    <div class="info" id="info"></div>
+    <div class="results" id="results">
+      <div class="column">
+        <h3>원문 NOTAM</h3>
+        <pre id="rawNotam"></pre>
+      </div>
+      <div class="column">
+        <h3>해석 결과</h3>
+        <pre id="translatedNotam"></pre>
+      </div>
+    </div>
   </div>
 </body>
 </html>
