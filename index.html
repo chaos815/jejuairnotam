@@ -1,1 +1,30 @@
-<html><body><h1>NOTAM Viewer (API)</h1></body></html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NOTAM Viewer</title>
+    <script>
+    async function fetchNOTAM() {
+        const icao = document.getElementById('icaoInput').value.trim().toUpperCase();
+        if (!icao) return;
+
+        const res = await fetch(`/api/notam?icao=${icao}`);
+        const data = await res.text();
+        document.getElementById('notamResult').innerText = data;
+    }
+
+    window.onload = () => {
+        document.getElementById('icaoInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') fetchNOTAM();
+        });
+    };
+    </script>
+</head>
+<body>
+    <h1>NOTAM Viewer (Airport)</h1>
+    <input id="icaoInput" type="text" placeholder="Enter ICAO code (e.g., RKSS)" />
+    <button onclick="fetchNOTAM()">Search</button>
+    <pre id="notamResult" style="white-space: pre-wrap; border: 1px solid #ccc; padding: 1em;"></pre>
+</body>
+</html>
