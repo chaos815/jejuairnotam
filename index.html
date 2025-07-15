@@ -5,14 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Jeju Air NOTAM Viewer</title>
   <style>
+    :root {
+      --jeju-orange: #ff6000;
+    }
     body {
       font-family: Arial, sans-serif;
-      padding: 2rem;
+      padding: 0;
+      margin: 0;
       background: #f1f3f5;
+    }
+    .header {
+      background-color: var(--jeju-orange);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      font-size: 1.3rem;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
     .container {
       max-width: 900px;
-      margin: auto;
+      margin: 2rem auto;
       background: white;
       padding: 2rem;
       border-radius: 1rem;
@@ -20,6 +35,7 @@
     }
     h1 {
       text-align: center;
+      margin-bottom: 1rem;
     }
     input[type="text"], button {
       width: 100%;
@@ -50,8 +66,11 @@
   </style>
 </head>
 <body>
+  <div class="header">
+    <div>✈️ Jejuair NOTAM Viewer</div>
+    <div id="currentTime">--:--</div>
+  </div>
   <div class="container">
-    <h1>NOTAM Viewer</h1>
     <input type="text" id="flightInput" placeholder="Enter flight number (e.g. 6001)">
     <button onclick="searchFlight()">Search</button>
     <div id="flightInfo" class="info"></div>
@@ -83,14 +102,13 @@
       document.getElementById("notamOriginal").innerText = "실시간 NOTAM 원문 불러오는 중...";
       document.getElementById("notamTranslated").innerText = "번역결과 준비 중...";
 
-      // 임시 예시 데이터 표시
       setTimeout(() => {
         document.getElementById("notamOriginal").innerText = "A1234/25 NOTAM TEXT EXAMPLE\nZONES CLOSED DUE TO ACTIVITY";
         document.getElementById("notamTranslated").innerText = "A1234/25 노탐 예시\n활동으로 인해 구역이 폐쇄되었습니다.";
       }, 1000);
     }
 
-    // 엔터 키 입력도 검색 실행
+    // 엔터로도 검색 실행
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("flightInput").addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
@@ -98,6 +116,16 @@
           searchFlight();
         }
       });
+
+      // 현재 시간 업데이트
+      function updateTime() {
+        const now = new Date();
+        const kst = new Date(now.getTime() + (9 * 60 * 60 * 1000)); // KST
+        const timeStr = kst.toISOString().replace("T", " ").substring(0, 16);
+        document.getElementById("currentTime").innerText = timeStr;
+      }
+      updateTime();
+      setInterval(updateTime, 60000);
     });
   </script>
 </body>
