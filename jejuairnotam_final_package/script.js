@@ -1,0 +1,1 @@
+console.log('NOTAM Viewer Ready');
