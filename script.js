@@ -1,1 +1,1 @@
-// Final version script
+// 복원된 script.js

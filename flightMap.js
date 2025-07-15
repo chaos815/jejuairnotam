@@ -1,1 +1,1 @@
-// Flight mapping data
+const flightMap = { '7C1001': ['RKSS', 'RKPC'] };
