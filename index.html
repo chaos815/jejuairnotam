@@ -3,28 +3,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>NOTAM Viewer</title>
+    <title>NOTAM Viewer (Airport & FIR)</title>
     <script>
-    async function fetchNOTAM() {
+    async function fetchAirportNOTAM() {
         const icao = document.getElementById('icaoInput').value.trim().toUpperCase();
         if (!icao) return;
 
         const res = await fetch(`/api/notam?icao=${icao}`);
         const data = await res.text();
-        document.getElementById('notamResult').innerText = data;
+        document.getElementById('notamAirportResult').innerText = data;
+    }
+
+    async function fetchFIRNOTAM() {
+        const fir = document.getElementById('firInput').value.trim().toUpperCase();
+        if (!fir) return;
+
+        const res = await fetch(`/api/fir-notam?fir=${fir}`);
+        const data = await res.text();
+        document.getElementById('notamFIRResult').innerText = data;
     }
 
     window.onload = () => {
         document.getElementById('icaoInput').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') fetchNOTAM();
+            if (e.key === 'Enter') fetchAirportNOTAM();
+        });
+        document.getElementById('firInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') fetchFIRNOTAM();
         });
     };
     </script>
 </head>
 <body>
-    <h1>NOTAM Viewer (Airport)</h1>
+    <h1>NOTAM Viewer</h1>
+
+    <h2>Airport NOTAM</h2>
     <input id="icaoInput" type="text" placeholder="Enter ICAO code (e.g., RKSS)" />
-    <button onclick="fetchNOTAM()">Search</button>
-    <pre id="notamResult" style="white-space: pre-wrap; border: 1px solid #ccc; padding: 1em;"></pre>
+    <button onclick="fetchAirportNOTAM()">Search Airport</button>
+    <pre id="notamAirportResult" style="white-space: pre-wrap; border: 1px solid #ccc; padding: 1em;"></pre>
+
+    <h2>FIR NOTAM</h2>
+    <input id="firInput" type="text" placeholder="Enter FIR code (e.g., RKRR)" />
+    <button onclick="fetchFIRNOTAM()">Search FIR</button>
+    <pre id="notamFIRResult" style="white-space: pre-wrap; border: 1px solid #ccc; padding: 1em;"></pre>
 </body>
 </html>

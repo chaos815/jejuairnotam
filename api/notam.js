@@ -3,10 +3,7 @@ const https = require('https');
 
 module.exports = async (req, res) => {
   const { icao } = req.query;
-  if (!icao) {
-    res.status(400).send("Missing ICAO code");
-    return;
-  }
+  if (!icao) return res.status(400).send("Missing ICAO code");
 
   const url = `https://ourairports.com/airports/${icao}/notams.html`;
 
@@ -21,7 +18,7 @@ module.exports = async (req, res) => {
         res.status(404).send("NOTAM data not found");
       }
     });
-  }).on("error", (err) => {
+  }).on("error", () => {
     res.status(500).send("Error fetching NOTAM data");
   });
 };
