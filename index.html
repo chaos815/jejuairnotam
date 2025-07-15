@@ -1,1 +1,26 @@
-<html><head><title>Jejuair NOTAM Viewer</title></head><body><h1>미리보기 화면</h1><p>기능 구현 중입니다.</p></body></html>
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jejuair NOTAM Viewer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Jejuair NOTAM Viewer</h1>
+    <div id="timeDisplay">2025-07-15 11:10 KST</div>
+  </header>
+  <main>
+    <label for="flightInput">편명 입력 (숫자만):</label>
+    <input id="flightInput" type="text" placeholder="예: 6001" />
+    <button onclick="searchFlight()">검색</button>
+    <div id="routeInfo"></div>
+    <div class="results">
+      <div class="column" id="notamOriginal">NOTAM 원문</div>
+      <div class="column" id="notamTranslated">해석본</div>
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
